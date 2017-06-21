@@ -80,6 +80,7 @@ public class SROperator {
                         throw new NullPointerException("OnResultListener is null");
                     }
                     mOnResultListener.onResult(str_result);
+                    str_result = "";
                 }
             }
 
