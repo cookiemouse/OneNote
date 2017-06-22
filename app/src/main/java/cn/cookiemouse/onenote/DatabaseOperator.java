@@ -24,9 +24,12 @@ public class DatabaseOperator {
 
     private SQLiteDatabase mSqLiteDatabase;
 
+    private OnDataChangedListener mOnDataChangedListener;
+
     public DatabaseOperator(Context context) {
         DatabaseHelper databaseHelper = new DatabaseHelper(context, DB_NAME);
         mSqLiteDatabase = databaseHelper.getWritableDatabase();
+        mOnDataChangedListener = (OnDataChangedListener) context;
     }
 
     // 增
@@ -47,8 +50,12 @@ public class DatabaseOperator {
             mSqLiteDatabase.endTransaction();
         }
 
-
         Log.i(TAG, "addNoteList: --> " + "加一条目 ");
+
+        if (null == mOnDataChangedListener){
+            throw new NullPointerException("OnDataChangedListener is null");
+        }
+        mOnDataChangedListener.onDataChanged();
     }
 
     // 查
@@ -59,11 +66,10 @@ public class DatabaseOperator {
         try {
             Cursor cursor = mSqLiteDatabase.query(DB_TABLE
                     , new String[]{"text, path, type, grade"}
-                    , "path=?"
-                    , new String[]{"122"}
+                    , null
+                    , null
                     , null, null, null);
 
-            Log.i(TAG, "getNoteList: cursor.move 1-->" + cursor.moveToFirst());
             while (cursor.moveToNext()) {
                 Log.i(TAG, "getNoteList: --> while");
 
@@ -96,14 +102,19 @@ public class DatabaseOperator {
         mSqLiteDatabase.beginTransaction();
         try {
             mSqLiteDatabase.delete(DB_TABLE
-                    , "path=?"
-                    , new String[]{noteListDataList.get(position).getPath()});
+                    , "text=?"
+                    , new String[]{noteListDataList.get(position).getText()});
             mSqLiteDatabase.setTransactionSuccessful();
         } catch (Exception e) {
             Log.e(TAG, e + "SqliteDatabase delete error");
         } finally {
             mSqLiteDatabase.endTransaction();
         }
+
+        if (null == mOnDataChangedListener){
+            throw new NullPointerException("OnDataChangedListener is null");
+        }
+        mOnDataChangedListener.onDataChanged();
     }
 
     // 改
@@ -130,10 +141,19 @@ public class DatabaseOperator {
         } finally {
             mSqLiteDatabase.endTransaction();
         }
+
+        if (null == mOnDataChangedListener){
+            throw new NullPointerException("OnDataChangedListener is null");
+        }
+        mOnDataChangedListener.onDataChanged();
     }
 
     // 关闭
     public void closeDB() {
         mSqLiteDatabase.close();
+    }
+
+    public interface OnDataChangedListener{
+        void onDataChanged();
     }
 }

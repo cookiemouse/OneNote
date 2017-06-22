@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.Window;
 
 import com.iflytek.cloud.SpeechConstant;
@@ -17,6 +18,10 @@ import com.iflytek.cloud.SpeechUtility;
 import cn.cookiemouse.onenote.R;
 
 public class GuideActivity extends Activity {
+
+    private static final String TAG = "GuideActivity";
+
+    private static final int DELAY_TIME = 500;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,7 +34,7 @@ public class GuideActivity extends Activity {
         SpeechUtility.createUtility(this, SpeechConstant.APPID + "=5949fa7e");
     }
 
-    private void toActivity(){
+    private void toActivity() {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -37,27 +42,56 @@ public class GuideActivity extends Activity {
                 startActivity(intent);
                 GuideActivity.this.finish();
             }
-        }, 1000);
+        }, DELAY_TIME);
     }
 
-    private void applyPermission(){
-        int check = ContextCompat.checkSelfPermission(GuideActivity.this
+    private void applyPermission() {
+        int check_save = ContextCompat.checkSelfPermission(GuideActivity.this
                 , Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        if (PackageManager.PERMISSION_GRANTED == check){
-            toActivity();
+
+        int check_record = ContextCompat.checkSelfPermission(GuideActivity.this
+                , Manifest.permission.RECORD_AUDIO);
+
+        if (PackageManager.PERMISSION_GRANTED != check_save) {
+            ActivityCompat.requestPermissions(GuideActivity.this
+                    , new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}
+                    , 1);
             return;
         }
-        ActivityCompat.requestPermissions(GuideActivity.this
-                , new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}
-                , 1);
+
+        if (PackageManager.PERMISSION_GRANTED != check_record) {
+            ActivityCompat.requestPermissions(GuideActivity.this
+                    , new String[]{Manifest.permission.RECORD_AUDIO}
+                    , 2);
+            return;
+        }
+
+        toActivity();
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-//        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
-//            return;
-//        }
-        toActivity();
+        switch (requestCode) {
+            case 1: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    applyPermission();
+                    break;
+                } else {
+                    GuideActivity.this.finish();
+                }
+            }
+            case 2: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    applyPermission();
+                    break;
+                } else {
+                    GuideActivity.this.finish();
+                }
+            }
+            default: {
+                Log.i(TAG, "onRequestPermissionsResult: ");
+            }
+        }
     }
 }
