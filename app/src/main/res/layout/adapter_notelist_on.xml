@@ -1,21 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ll_adapter_notelist_on"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-        android:background="@drawable/bg_item"
+    android:background="@drawable/bg_item_green"
     android:orientation="vertical">
 
-    <include layout="@layout/adapter_notelist_on_top"/>
+    <include layout="@layout/adapter_notelist_on_top" />
 
     <TextView
         android:id="@+id/tv_adapter_notelist_on"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/sp_20"
-        android:padding="@dimen/dp_8"
         android:layout_margin="@dimen/dp_8"
+        android:padding="@dimen/dp_8"
         android:text="on"
-        android:textColor="@color/color_Write"/>
+        android:textColor="@color/color_Write"
+        android:textSize="@dimen/sp_20" />
 
-    <include layout="@layout/adapter_notelist_on_bottom"/>
+    <include layout="@layout/adapter_notelist_on_bottom" />
 </LinearLayout>

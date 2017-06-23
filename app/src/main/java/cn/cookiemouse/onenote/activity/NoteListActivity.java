@@ -21,7 +21,7 @@ import cn.cookiemouse.onenote.data.DataType;
 import cn.cookiemouse.onenote.data.NoteListData;
 
 public class NoteListActivity extends AppCompatActivity implements DatabaseOperator.OnDataChangedListener
-        , NoteListAdapter.OnControlListener{
+        , NoteListAdapter.OnControlListener {
 
     private static final String TAG = "NoteListActivity";
 
@@ -81,6 +81,8 @@ public class NoteListActivity extends AppCompatActivity implements DatabaseOpera
                         , DataType.TYPE_PERSONAL
                         , DataGrade.GRADE_NORMAL);
                 Toast.makeText(NoteListActivity.this, result, Toast.LENGTH_SHORT).show();
+                // 滑动到最末尾
+                mListViewNote.smoothScrollToPosition(mNoteListDataList.size());
             }
         });
 
@@ -97,6 +99,17 @@ public class NoteListActivity extends AppCompatActivity implements DatabaseOpera
                 }
                 mNoteListDataList.get(i).setState(true);
                 adapter.notifyDataSetChanged();
+
+                // 让展开item置中
+                int top = mListViewNote.getFirstVisiblePosition() + 1;
+                int bottom = mListViewNote.getLastVisiblePosition() - 1;
+                int middle = ((bottom - top) / 2);
+                int position_visible = i - top;
+                if (position_visible <= middle) {
+                    mListViewNote.smoothScrollToPosition(i - 3);
+                } else {
+                    mListViewNote.smoothScrollToPosition(i + 3);
+                }
             }
         });
     }
@@ -124,5 +137,12 @@ public class NoteListActivity extends AppCompatActivity implements DatabaseOpera
     @Override
     public void onPlay(int position) {
         Log.i(TAG, "onPlay: ");
+    }
+
+    @Override
+    public void onGradeChanged(int position, int grade) {
+        mDatabaseOperator.updateNoteListDate(position, grade);
+        //为了保持展开状态
+        mNoteListDataList.get(position).setState(true);
     }
 }

@@ -50,8 +50,6 @@ public class DatabaseOperator {
             mSqLiteDatabase.endTransaction();
         }
 
-        Log.i(TAG, "addNoteList: --> " + "加一条目 ");
-
         if (null == mOnDataChangedListener){
             throw new NullPointerException("OnDataChangedListener is null");
         }
@@ -71,8 +69,6 @@ public class DatabaseOperator {
                     , null, null, null);
 
             while (cursor.moveToNext()) {
-                Log.i(TAG, "getNoteList: --> while");
-
                 String text = cursor.getString(0);
                 String path = cursor.getString(1);
                 int type = cursor.getInt(2);
@@ -88,8 +84,6 @@ public class DatabaseOperator {
             mSqLiteDatabase.endTransaction();
         }
 
-
-        Log.i(TAG, "getNoteList: --> " + noteListDataList.size());
         return noteListDataList;
     }
 
@@ -133,8 +127,64 @@ public class DatabaseOperator {
         try {
             mSqLiteDatabase.update(DB_TABLE
                     , contentValues
-                    , "path=?"
-                    , new String[]{noteListDataList.get(position).getPath()});
+                    , "text=?"
+                    , new String[]{noteListDataList.get(position).getText()});
+            mSqLiteDatabase.setTransactionSuccessful();
+        } catch (Exception e) {
+            Log.e(TAG, e + "SqLiteDatabase update error");
+        } finally {
+            mSqLiteDatabase.endTransaction();
+        }
+
+        if (null == mOnDataChangedListener){
+            throw new NullPointerException("OnDataChangedListener is null");
+        }
+        mOnDataChangedListener.onDataChanged();
+    }
+
+    // 改，重载
+    public void updateNoteListDate(int position, String text) {
+        List<NoteListData> noteListDataList = getNoteList();
+        if (position >= noteListDataList.size()) {
+            return;
+        }
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("text", text);
+
+        mSqLiteDatabase.beginTransaction();
+        try {
+            mSqLiteDatabase.update(DB_TABLE
+                    , contentValues
+                    , "text=?"
+                    , new String[]{noteListDataList.get(position).getText()});
+            mSqLiteDatabase.setTransactionSuccessful();
+        } catch (Exception e) {
+            Log.e(TAG, e + "SqLiteDatabase update error");
+        } finally {
+            mSqLiteDatabase.endTransaction();
+        }
+
+        if (null == mOnDataChangedListener){
+            throw new NullPointerException("OnDataChangedListener is null");
+        }
+        mOnDataChangedListener.onDataChanged();
+    }
+
+    // 改
+    public void updateNoteListDate(int position, int grade) {
+        List<NoteListData> noteListDataList = getNoteList();
+        if (position >= noteListDataList.size()) {
+            return;
+        }
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("grade", grade);
+
+        mSqLiteDatabase.beginTransaction();
+        try {
+            mSqLiteDatabase.update(DB_TABLE
+                    , contentValues
+                    , "text=?"
+                    , new String[]{noteListDataList.get(position).getText()});
             mSqLiteDatabase.setTransactionSuccessful();
         } catch (Exception e) {
             Log.e(TAG, e + "SqLiteDatabase update error");
