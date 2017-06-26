@@ -18,5 +18,14 @@
         android:textColor="@color/color_Write"
         android:textSize="@dimen/sp_20" />
 
+    <TextView
+        android:id="@+id/tv_adapter_notelist_on_time"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="right"
+        android:lines="1"
+        android:paddingRight="@dimen/dp_16"
+        android:textColor="@color/color_Write" />
+
     <include layout="@layout/adapter_notelist_on_bottom" />
 </LinearLayout>

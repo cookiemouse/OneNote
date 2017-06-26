@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.cookiemouse.onenote.data.NoteListData;
+import cn.cookiemouse.onenote.utils.TimeFormat;
 
 /**
  * Created by cookiemouse on 17-6-21.
@@ -39,6 +40,8 @@ public class DatabaseOperator {
         contentValues.put("path", path);
         contentValues.put("type", type);
         contentValues.put("grade", grade);
+        String time = Long.toString(System.currentTimeMillis());
+        contentValues.put("time", time);
 
         mSqLiteDatabase.beginTransaction();
         try {
@@ -63,7 +66,7 @@ public class DatabaseOperator {
         mSqLiteDatabase.beginTransaction();
         try {
             Cursor cursor = mSqLiteDatabase.query(DB_TABLE
-                    , new String[]{"text, path, type, grade"}
+                    , new String[]{"text, path, type, grade, time"}
                     , null
                     , null
                     , null, null, null);
@@ -73,8 +76,10 @@ public class DatabaseOperator {
                 String path = cursor.getString(1);
                 int type = cursor.getInt(2);
                 int grade = cursor.getInt(3);
+                String time = cursor.getString(4);
+                time = new TimeFormat().millisToDate(time);
 
-                noteListDataList.add(new NoteListData(text, path, type, grade));
+                noteListDataList.add(new NoteListData(text, path, type, grade, time));
             }
 
             mSqLiteDatabase.setTransactionSuccessful();

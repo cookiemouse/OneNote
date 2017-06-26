@@ -33,7 +33,6 @@ public class NoteListAdapter extends BaseAdapter {
     private List<NoteListData> mNoteListDataList;
 
     private OnControlListener mOnControlListener;
-    private int position;
 
     public NoteListAdapter(Context context, List<NoteListData> mNoteListDataList) {
         this.context = context;
@@ -86,6 +85,7 @@ public class NoteListAdapter extends BaseAdapter {
                         , viewGroup, false);
 
                 viewHolderOn.textViewText = view.findViewById(R.id.tv_adapter_notelist_on);
+                viewHolderOn.textViewTime = view.findViewById(R.id.tv_adapter_notelist_on_time);
 
                 viewHolderOn.imageViewBottomDelete = view.findViewById(R.id.iv_adapter_layout_bottom_1);
                 viewHolderOn.imageViewBottomEdit = view.findViewById(R.id.iv_adapter_layout_bottom_2);
@@ -210,6 +210,7 @@ public class NoteListAdapter extends BaseAdapter {
                 }
             }
             viewHolderOn.textViewText.setText(data.getText());
+            viewHolderOn.textViewTime.setText(data.getTime());
 
         } else {
             if (null == view) {
@@ -261,6 +262,7 @@ public class NoteListAdapter extends BaseAdapter {
 
     private class ViewHolderOn {
         TextView textViewText;
+        TextView textViewTime;
         //还有其他
         ImageView imageViewBottomDelete;
         ImageView imageViewBottomEdit;

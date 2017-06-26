@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:background="@drawable/bg_recording"
+    android:id="@+id/ll_layout_activity_note_list_bottom"
+    android:paddingLeft="@dimen/dp_48"
+    android:paddingStart="@dimen/dp_48"
+    android:paddingEnd="@dimen/dp_48"
+    android:paddingRight="@dimen/dp_48"
+    android:paddingTop="@dimen/dp_8"
+    android:paddingBottom="@dimen/dp_8"
+    android:gravity="center"
+    >
+
+    <ImageView
+        android:layout_width="@dimen/dp_32"
+        android:layout_height="@dimen/dp_32"
+        android:src="@drawable/ic_recording"
+        android:clickable="false"/>
+
+    <TextView
+        android:layout_marginLeft="@dimen/dp_8"
+        android:layout_marginStart="@dimen/dp_8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/color_Write"
+        android:textSize="@dimen/sp_20"
+        android:text="点击录音"/>
+
+</LinearLayout>

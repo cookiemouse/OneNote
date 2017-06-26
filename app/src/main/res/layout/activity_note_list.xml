@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@color/color_BlueGray"
+    android:orientation="vertical"
     tools:context="cn.cookiemouse.onenote.activity.NoteListActivity">
 
     <ListView
@@ -14,12 +13,27 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:divider="@color/color_Gray"
-        android:dividerHeight="@dimen/dp_1"/>
+        android:dividerHeight="@dimen/dp_1" />
 
-    <Button
-        android:id="@+id/btn_activity_listen"
+    <!--<Button-->
+    <!--android:id="@+id/btn_activity_listen"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:text="@string/record"/>-->
+
+
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/record"/>
+        android:padding="@dimen/dp_8"
+        android:gravity="center">
+
+        <include
+            android:id="@+id/btn_activity_listen"
+            layout="@layout/layout_activity_note_list_bottom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </RelativeLayout>
 
 </LinearLayout>

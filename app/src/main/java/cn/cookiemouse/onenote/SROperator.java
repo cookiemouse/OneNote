@@ -57,11 +57,16 @@ public class SROperator {
             @Override
             public void onBeginOfSpeech() {
                 Log.i(TAG, "onBeginOfSpeech: ");
+                str_result = "";
             }
 
             @Override
             public void onEndOfSpeech() {
                 Log.i(TAG, "onEndOfSpeech: ");
+                if (null == mOnResultListener) {
+                    throw new NullPointerException("OnResultListener is null");
+                }
+                mOnResultListener.onEndOfSpeech();
             }
 
             @Override
@@ -75,12 +80,11 @@ public class SROperator {
                         str_result += cwBean.getW();
                     }
                 }
-                if (resultJson.isLs()) {
+                if (resultJson.isLs()){
                     if (null == mOnResultListener) {
                         throw new NullPointerException("OnResultListener is null");
                     }
                     mOnResultListener.onResult(str_result);
-                    str_result = "";
                 }
             }
 
@@ -115,6 +119,7 @@ public class SROperator {
 
     public interface OnResultListener {
         void onResult(String result);
+        void onEndOfSpeech();
     }
 
     public void setOnResultListener(OnResultListener listener) {

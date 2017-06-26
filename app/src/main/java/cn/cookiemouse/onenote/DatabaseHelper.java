@@ -20,7 +20,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String CREATE_TABLE = "create table " +
             DATABASE_TABLE +
-            "(text TEXT,path TEXT,type INTEGER,grade INTEGER)";
+            "(text TEXT,path TEXT,type INTEGER,grade INTEGER, time TEXT)";
 
     public DatabaseHelper(Context context, String name) {
         this(context, name, null, VERSION);
@@ -32,7 +32,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-//        sqLiteDatabase.execSQL("drop table note_list_db.note_list");
         Log.i(TAG, "onCreate: --> 1");
         sqLiteDatabase.execSQL(CREATE_TABLE);
         Log.i(TAG, "onCreate: --> 2");

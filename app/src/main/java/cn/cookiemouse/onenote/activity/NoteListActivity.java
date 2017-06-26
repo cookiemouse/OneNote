@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -19,6 +20,7 @@ import cn.cookiemouse.onenote.adapter.NoteListAdapter;
 import cn.cookiemouse.onenote.data.DataGrade;
 import cn.cookiemouse.onenote.data.DataType;
 import cn.cookiemouse.onenote.data.NoteListData;
+import cn.cookiemouse.onenote.fragment.RecordingFragment;
 
 public class NoteListActivity extends AppCompatActivity implements DatabaseOperator.OnDataChangedListener
         , NoteListAdapter.OnControlListener {
@@ -26,7 +28,7 @@ public class NoteListActivity extends AppCompatActivity implements DatabaseOpera
     private static final String TAG = "NoteListActivity";
 
     private ListView mListViewNote;
-    private Button mButtonListen;
+    private LinearLayout mButtonListen;
 
     private SROperator mSrOperator;
 
@@ -34,6 +36,8 @@ public class NoteListActivity extends AppCompatActivity implements DatabaseOpera
     private NoteListAdapter adapter;
 
     private DatabaseOperator mDatabaseOperator;
+
+    private RecordingFragment mRecordingFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +51,7 @@ public class NoteListActivity extends AppCompatActivity implements DatabaseOpera
 
     private void initView() {
         mListViewNote = (ListView) findViewById(R.id.lv_activity_notelist);
-        mButtonListen = (Button) findViewById(R.id.btn_activity_listen);
+        mButtonListen = (LinearLayout) findViewById(R.id.btn_activity_listen);
 
         mSrOperator = new SROperator(this);
 
@@ -56,6 +60,8 @@ public class NoteListActivity extends AppCompatActivity implements DatabaseOpera
         mNoteListDataList = new ArrayList<>();
 
         adapter = new NoteListAdapter(NoteListActivity.this, mNoteListDataList);
+
+        mRecordingFragment = new RecordingFragment();
 
         for (NoteListData data : mDatabaseOperator.getNoteList()) {
             mNoteListDataList.add(data);
@@ -70,19 +76,31 @@ public class NoteListActivity extends AppCompatActivity implements DatabaseOpera
             public void onClick(View view) {
                 // : 17-6-21 录制按钮事件
                 mSrOperator.startListen();
+                mRecordingFragment.show(getSupportFragmentManager(), "RecordingFragment");
             }
         });
 
         mSrOperator.setOnResultListener(new SROperator.OnResultListener() {
             @Override
             public void onResult(String result) {
+                Log.i(TAG, "onResult: -->" + result);
+                if ("".equals(result)){
+                    Toast.makeText(NoteListActivity.this, "您好像没有说话", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 mDatabaseOperator.addNoteList(result
                         , ""
                         , DataType.TYPE_PERSONAL
                         , DataGrade.GRADE_NORMAL);
-                Toast.makeText(NoteListActivity.this, result, Toast.LENGTH_SHORT).show();
+
                 // 滑动到最末尾
                 mListViewNote.smoothScrollToPosition(mNoteListDataList.size());
+            }
+
+            @Override
+            public void onEndOfSpeech() {
+                mRecordingFragment.dismiss();
+                Log.i(TAG, "onNoResult: ");
             }
         });
 
