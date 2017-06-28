@@ -91,6 +91,11 @@ public class SROperator {
             @Override
             public void onError(SpeechError speechError) {
                 Log.i(TAG, "onError: ");
+                str_result = "";
+                if (null == mOnResultListener) {
+                    throw new NullPointerException("OnResultListener is null");
+                }
+                mOnResultListener.onResult(str_result);
             }
 
             @Override
@@ -101,8 +106,11 @@ public class SROperator {
 
         mSpeechRecognizer.setParameter(SpeechConstant.NET_TIMEOUT, "8000");
         mSpeechRecognizer.setParameter(SpeechConstant.ENGINE_TYPE, SpeechConstant.TYPE_CLOUD);
+        mSpeechRecognizer.setParameter(SpeechConstant.VAD_BOS, "3500");
+        mSpeechRecognizer.setParameter(SpeechConstant.VAD_EOS, "1500");
         str_path += "/123.wav";
         mSpeechRecognizer.setParameter(SpeechConstant.ASR_AUDIO_PATH, str_path);
+        mSpeechRecognizer.setParameter(SpeechConstant.AUDIO_FORMAT, "wav");
     }
 
     public void startListen() {

@@ -1,5 +1,7 @@
 package cn.cookiemouse.onenote.activity;
 
+import android.media.MediaPlayer;
+import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -155,6 +158,23 @@ public class NoteListActivity extends AppCompatActivity implements DatabaseOpera
     @Override
     public void onPlay(int position) {
         Log.i(TAG, "onPlay: ");
+
+        String path = Environment.getExternalStorageDirectory().getPath() + "/test/123.wav";
+
+        MediaPlayer mediaPlayer = new MediaPlayer();
+        try {
+            mediaPlayer.setDataSource(path);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        mediaPlayer.prepareAsync();
+        mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+            @Override
+            public void onPrepared(MediaPlayer mediaPlayer) {
+                mediaPlayer.start();
+            }
+        });
+
     }
 
     @Override
