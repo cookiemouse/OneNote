@@ -127,6 +127,7 @@ public class NoteListAdapter extends BaseAdapter {
                     if (null == mOnControlListener) {
                         throw new NullPointerException("OnControlListener is null");
                     }
+                    mOnControlListener.onCopyed(position);
                     ClipboardManager cm = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
                     // 将文本内容放到系统剪贴板里。
                     ClipData mClipData = ClipData.newPlainText("Label", data.getText());
@@ -281,6 +282,8 @@ public class NoteListAdapter extends BaseAdapter {
         void onDelete(int position);
 
         void onEdit(int position);
+
+        void onCopyed(int position);
 
         void onPlay(int position);
 

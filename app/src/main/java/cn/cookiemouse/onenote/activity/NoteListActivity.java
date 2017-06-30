@@ -1,5 +1,6 @@
 package cn.cookiemouse.onenote.activity;
 
+import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
@@ -23,6 +24,7 @@ import cn.cookiemouse.onenote.adapter.NoteListAdapter;
 import cn.cookiemouse.onenote.data.DataGrade;
 import cn.cookiemouse.onenote.data.DataType;
 import cn.cookiemouse.onenote.data.NoteListData;
+import cn.cookiemouse.onenote.flag.NoteFlag;
 import cn.cookiemouse.onenote.fragment.RecordingFragment;
 
 public class NoteListActivity extends AppCompatActivity implements DatabaseOperator.OnDataChangedListener
@@ -42,6 +44,8 @@ public class NoteListActivity extends AppCompatActivity implements DatabaseOpera
 
     private RecordingFragment mRecordingFragment;
 
+    private Toast mToast;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,6 +54,20 @@ public class NoteListActivity extends AppCompatActivity implements DatabaseOpera
         initView();
 
         setEventListener();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (null != mNoteListDataList) {
+            mNoteListDataList.clear();
+        }
+
+        for (NoteListData data : mDatabaseOperator.getNoteList()) {
+            mNoteListDataList.add(data);
+        }
+        adapter.notifyDataSetChanged();
     }
 
     private void initView() {
@@ -66,11 +84,9 @@ public class NoteListActivity extends AppCompatActivity implements DatabaseOpera
 
         mRecordingFragment = new RecordingFragment();
 
-        for (NoteListData data : mDatabaseOperator.getNoteList()) {
-            mNoteListDataList.add(data);
-        }
-
         mListViewNote.setAdapter(adapter);
+
+        mToast = Toast.makeText(this, "", Toast.LENGTH_SHORT);
     }
 
     private void setEventListener() {
@@ -87,8 +103,9 @@ public class NoteListActivity extends AppCompatActivity implements DatabaseOpera
             @Override
             public void onResult(String result) {
                 Log.i(TAG, "onResult: -->" + result);
-                if ("".equals(result)){
-                    Toast.makeText(NoteListActivity.this, "您好像没有说话", Toast.LENGTH_SHORT).show();
+                if ("".equals(result)) {
+                    mToast.setText("您好像没有说话！");
+                    mToast.show();
                     return;
                 }
                 mDatabaseOperator.addNoteList(result
@@ -153,6 +170,15 @@ public class NoteListActivity extends AppCompatActivity implements DatabaseOpera
     @Override
     public void onEdit(int position) {
         Log.i(TAG, "onEdit: ");
+        Intent intent = new Intent(NoteListActivity.this, NoteEditActivity.class);
+        intent.putExtra(NoteFlag.NOTE_EDIT_POSITION, position);
+        startActivity(intent);
+    }
+
+    @Override
+    public void onCopyed(int position) {
+        mToast.setText("文本已复制到粘贴板！");
+        mToast.show();
     }
 
     @Override

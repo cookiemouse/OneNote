@@ -30,7 +30,11 @@ public class DatabaseOperator {
     public DatabaseOperator(Context context) {
         DatabaseHelper databaseHelper = new DatabaseHelper(context, DB_NAME);
         mSqLiteDatabase = databaseHelper.getWritableDatabase();
-        mOnDataChangedListener = (OnDataChangedListener) context;
+        try {
+            mOnDataChangedListener = (OnDataChangedListener) context;
+        } catch (ClassCastException e) {
+            Log.i(TAG, "DatabaseOperator: OnDataChangedListener ClassCastException " + e);
+        }
     }
 
     // 增
@@ -53,7 +57,7 @@ public class DatabaseOperator {
             mSqLiteDatabase.endTransaction();
         }
 
-        if (null == mOnDataChangedListener){
+        if (null == mOnDataChangedListener) {
             throw new NullPointerException("OnDataChangedListener is null");
         }
         mOnDataChangedListener.onDataChanged();
@@ -110,7 +114,7 @@ public class DatabaseOperator {
             mSqLiteDatabase.endTransaction();
         }
 
-        if (null == mOnDataChangedListener){
+        if (null == mOnDataChangedListener) {
             throw new NullPointerException("OnDataChangedListener is null");
         }
         mOnDataChangedListener.onDataChanged();
@@ -141,7 +145,7 @@ public class DatabaseOperator {
             mSqLiteDatabase.endTransaction();
         }
 
-        if (null == mOnDataChangedListener){
+        if (null == mOnDataChangedListener) {
             throw new NullPointerException("OnDataChangedListener is null");
         }
         mOnDataChangedListener.onDataChanged();
@@ -169,7 +173,7 @@ public class DatabaseOperator {
             mSqLiteDatabase.endTransaction();
         }
 
-        if (null == mOnDataChangedListener){
+        if (null == mOnDataChangedListener) {
             throw new NullPointerException("OnDataChangedListener is null");
         }
         mOnDataChangedListener.onDataChanged();
@@ -197,7 +201,7 @@ public class DatabaseOperator {
             mSqLiteDatabase.endTransaction();
         }
 
-        if (null == mOnDataChangedListener){
+        if (null == mOnDataChangedListener) {
             throw new NullPointerException("OnDataChangedListener is null");
         }
         mOnDataChangedListener.onDataChanged();
@@ -208,7 +212,7 @@ public class DatabaseOperator {
         mSqLiteDatabase.close();
     }
 
-    public interface OnDataChangedListener{
+    public interface OnDataChangedListener {
         void onDataChanged();
     }
 }
