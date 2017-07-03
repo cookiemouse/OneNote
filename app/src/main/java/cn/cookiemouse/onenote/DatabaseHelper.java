@@ -18,6 +18,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_TABLE = "note_list_table";
 
+    //  path相当于主键，具有唯一性
     private static final String CREATE_TABLE = "create table " +
             DATABASE_TABLE +
             "(text TEXT,path TEXT,type INTEGER,grade INTEGER, time TEXT)";

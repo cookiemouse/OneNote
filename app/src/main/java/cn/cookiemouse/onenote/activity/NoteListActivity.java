@@ -13,11 +13,13 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import cn.cookiemouse.onenote.DatabaseOperator;
+import cn.cookiemouse.onenote.MediaManager;
 import cn.cookiemouse.onenote.R;
 import cn.cookiemouse.onenote.SROperator;
 import cn.cookiemouse.onenote.adapter.NoteListAdapter;
@@ -32,6 +34,8 @@ public class NoteListActivity extends AppCompatActivity implements DatabaseOpera
 
     private static final String TAG = "NoteListActivity";
 
+    private static final String PATH_ROOT = Environment.getExternalStorageDirectory().getPath();
+
     private ListView mListViewNote;
     private LinearLayout mButtonListen;
 
@@ -43,6 +47,8 @@ public class NoteListActivity extends AppCompatActivity implements DatabaseOpera
     private DatabaseOperator mDatabaseOperator;
 
     private RecordingFragment mRecordingFragment;
+
+    private MediaManager mMediaManager;
 
     private Toast mToast;
 
@@ -70,6 +76,13 @@ public class NoteListActivity extends AppCompatActivity implements DatabaseOpera
         adapter.notifyDataSetChanged();
     }
 
+    @Override
+    protected void onDestroy() {
+        mMediaManager.destroy();
+        mDatabaseOperator.closeDB();
+        super.onDestroy();
+    }
+
     private void initView() {
         mListViewNote = (ListView) findViewById(R.id.lv_activity_notelist);
         mButtonListen = (LinearLayout) findViewById(R.id.btn_activity_listen);
@@ -84,6 +97,8 @@ public class NoteListActivity extends AppCompatActivity implements DatabaseOpera
 
         mRecordingFragment = new RecordingFragment();
 
+        mMediaManager = MediaManager.getInstance();
+
         mListViewNote.setAdapter(adapter);
 
         mToast = Toast.makeText(this, "", Toast.LENGTH_SHORT);
@@ -94,6 +109,7 @@ public class NoteListActivity extends AppCompatActivity implements DatabaseOpera
             @Override
             public void onClick(View view) {
                 // : 17-6-21 录制按钮事件
+                mMediaManager.pause();
                 mSrOperator.startListen();
                 mRecordingFragment.show(getSupportFragmentManager(), "RecordingFragment");
             }
@@ -108,8 +124,15 @@ public class NoteListActivity extends AppCompatActivity implements DatabaseOpera
                     mToast.show();
                     return;
                 }
+
+                long a = System.currentTimeMillis() / 1000;
+
+                String name = "" + a;
+
+                rename(name);
+
                 mDatabaseOperator.addNoteList(result
-                        , ""
+                        , name
                         , DataType.TYPE_PERSONAL
                         , DataGrade.GRADE_NORMAL);
 
@@ -152,6 +175,18 @@ public class NoteListActivity extends AppCompatActivity implements DatabaseOpera
         });
     }
 
+    //  改名
+    private void rename(String name) {
+        String path = PATH_ROOT + "/test/temp";
+        String path2 = PATH_ROOT + "/test/" + name + ".wav";
+        File file = new File(path);
+        if (file.renameTo(new File(path2))) {
+            Log.i(TAG, "rename: true");
+        } else {
+            Log.i(TAG, "rename: false");
+        }
+    }
+
     @Override
     public void onDataChanged() {
         Log.i(TAG, "onDataChanged: ");
@@ -164,7 +199,20 @@ public class NoteListActivity extends AppCompatActivity implements DatabaseOpera
 
     @Override
     public void onDelete(int position) {
+
         mDatabaseOperator.removeNoteListData(position);
+
+        String path = PATH_ROOT
+                + "/test/"
+                + mDatabaseOperator.getNoteList().get(position).getPath()
+                + ".wav";
+        File file = new File(path);
+        if (!file.exists()) {
+            return;
+        }
+        if (file.delete()){
+            Log.i(TAG, "onDelete: 删除成功");
+        }
     }
 
     @Override
@@ -185,21 +233,35 @@ public class NoteListActivity extends AppCompatActivity implements DatabaseOpera
     public void onPlay(int position) {
         Log.i(TAG, "onPlay: ");
 
-        String path = Environment.getExternalStorageDirectory().getPath() + "/test/123.wav";
+        String path = PATH_ROOT
+                + "/test/"
+                + mDatabaseOperator.getNoteList().get(position).getPath()
+                + ".wav";
 
-        MediaPlayer mediaPlayer = new MediaPlayer();
-        try {
-            mediaPlayer.setDataSource(path);
-        } catch (IOException e) {
-            e.printStackTrace();
+        Log.i(TAG, "onPlay: path-->" + path);
+
+        File file = new File(path);
+        if (file.exists()) {
+            mMediaManager.setResource(path);
+        } else {
+            mToast.setText("未找到语音文件");
+            mToast.show();
         }
-        mediaPlayer.prepareAsync();
-        mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-            @Override
-            public void onPrepared(MediaPlayer mediaPlayer) {
-                mediaPlayer.start();
-            }
-        });
+
+
+//        MediaPlayer mediaPlayer = new MediaPlayer();
+//        try {
+//            mediaPlayer.setDataSource(path);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        mediaPlayer.prepareAsync();
+//        mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+//            @Override
+//            public void onPrepared(MediaPlayer mediaPlayer) {
+//                mediaPlayer.start();
+//            }
+//        });
 
     }
 

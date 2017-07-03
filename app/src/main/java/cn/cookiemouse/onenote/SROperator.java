@@ -108,7 +108,7 @@ public class SROperator {
         mSpeechRecognizer.setParameter(SpeechConstant.ENGINE_TYPE, SpeechConstant.TYPE_CLOUD);
         mSpeechRecognizer.setParameter(SpeechConstant.VAD_BOS, "3500");
         mSpeechRecognizer.setParameter(SpeechConstant.VAD_EOS, "1500");
-        str_path += "/123.wav";
+        str_path += "/temp";
         mSpeechRecognizer.setParameter(SpeechConstant.ASR_AUDIO_PATH, str_path);
         mSpeechRecognizer.setParameter(SpeechConstant.AUDIO_FORMAT, "wav");
     }

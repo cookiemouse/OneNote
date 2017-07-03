@@ -105,8 +105,8 @@ public class DatabaseOperator {
         mSqLiteDatabase.beginTransaction();
         try {
             mSqLiteDatabase.delete(DB_TABLE
-                    , "text=?"
-                    , new String[]{noteListDataList.get(position).getText()});
+                    , "path=?"
+                    , new String[]{noteListDataList.get(position).getPath()});
             mSqLiteDatabase.setTransactionSuccessful();
         } catch (Exception e) {
             Log.e(TAG, e + "SqliteDatabase delete error");
@@ -136,8 +136,8 @@ public class DatabaseOperator {
         try {
             mSqLiteDatabase.update(DB_TABLE
                     , contentValues
-                    , "text=?"
-                    , new String[]{noteListDataList.get(position).getText()});
+                    , "path=?"
+                    , new String[]{noteListDataList.get(position).getPath()});
             mSqLiteDatabase.setTransactionSuccessful();
         } catch (Exception e) {
             Log.e(TAG, e + "SqLiteDatabase update error");
@@ -164,8 +164,8 @@ public class DatabaseOperator {
         try {
             mSqLiteDatabase.update(DB_TABLE
                     , contentValues
-                    , "text=?"
-                    , new String[]{noteListDataList.get(position).getText()});
+                    , "path=?"
+                    , new String[]{noteListDataList.get(position).getPath()});
             mSqLiteDatabase.setTransactionSuccessful();
         } catch (Exception e) {
             Log.e(TAG, e + "SqLiteDatabase update error");
@@ -192,8 +192,8 @@ public class DatabaseOperator {
         try {
             mSqLiteDatabase.update(DB_TABLE
                     , contentValues
-                    , "text=?"
-                    , new String[]{noteListDataList.get(position).getText()});
+                    , "path=?"
+                    , new String[]{noteListDataList.get(position).getPath()});
             mSqLiteDatabase.setTransactionSuccessful();
         } catch (Exception e) {
             Log.e(TAG, e + "SqLiteDatabase update error");
