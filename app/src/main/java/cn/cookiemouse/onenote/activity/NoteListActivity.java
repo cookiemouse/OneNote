@@ -199,14 +199,16 @@ public class NoteListActivity extends AppCompatActivity implements DatabaseOpera
 
     @Override
     public void onDelete(int position) {
-
-        mDatabaseOperator.removeNoteListData(position);
+        Log.i(TAG, "onDelete: ");
 
         String path = PATH_ROOT
                 + "/test/"
                 + mDatabaseOperator.getNoteList().get(position).getPath()
                 + ".wav";
         File file = new File(path);
+
+        mDatabaseOperator.removeNoteListData(position);
+
         if (!file.exists()) {
             return;
         }
